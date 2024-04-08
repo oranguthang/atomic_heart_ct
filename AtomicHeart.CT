@@ -1,0 +1,1166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="45">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"speed modification"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+
+aobscanmodule(superspeedd,$process,F3 0F 11 86 AC 02 00 00)
+alloc(newmem,$1000,superspeedd)
+
+label(code)
+label(return)
+
+registersymbol(speeddul)
+label(speeddul)
+newmem:
+push rdi
+mov rdi,[rsi+20]
+cmp [rdi+108],0
+je code
+mov rdi,speeddul
+movss xmm0,[rdi]
+code:
+pop rdi
+movss [rsi+000002AC],xmm0
+jmp return
+speeddul:
+dd (float)1
+superspeedd:
+jmp newmem
+nop 3
+return:
+registersymbol(superspeedd)
+
+[DISABLE]
+superspeedd:
+db F3 0F 11 86 AC 02 00 00
+unregistersymbol(speeddul)
+unregistersymbol(superspeedd)
+dealloc(newmem)
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>63</ID>
+          <Description>"speed"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>speeddul</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>330584</ID>
+      <Description>"world gravity modifier"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : Genesis-Win64-Shipping.exe
+  Version: 
+  Date   : 2022-09-21
+  Author : Akira Fudo
+
+WorldSettings:WorldGravityZ:
+   4.17.2.0:
+      40 ? 48 83 EC ? 8B 81 ? ? ? ? 48 8B ? A8 ? 75 ? 84 C0
+      40 53 48 83 ?? ?? 8B ?? ?? ?? ?? ?? 48 8B ?? A8 ?? 75 ?? 84
+
+      F3 0F 10 40 38 F3 0F 11 83
+      F3 0F ? ? ? F3 0F ? ? ? ? ? ? 48 83 C4 ? 5B C3 F3 0F
+
+   4.26.1.0:
+      F3 0F 10 48 38 F3 0F 11 8B
+      F3 0F ? ? ? F3 0F ? ? ? ? ? ? 0F 28 ? 48 83 C4
+
+   4.27.20:
+      Icarus-Win64-Shipping.AWorldSettings::GetGravityZ+64
+      30 F3 0F 11 83 50 02 00 00
+      F3 0F ? ? ? ? ? ? 48 83 C4 ? 5B C3 F3 0F ? ? ? ? ? ? 48 83 C4 ? 5B C3 48 89
+
+      Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+5A
+      F3 0F 10 40 38 48 8B 7C
+      F3 0F ? ? ? 48 8B ? ? ? F3 0F ? ? ? ? ? ? 48 83 C4 ? 5B
+}
+
+[ENABLE]
+
+aobscanmodule(WorldGravityZ,$process,F3 0F ? ? ? 48 8B ? ? ? F3 0F ? ? ? ? ? ? 48 83 C4 ? 5B)
+alloc(newmem,$100,WorldGravityZ)
+alloc(bytesWorldGravityZ,5)
+
+label(code)
+label(return)
+
+bytesWorldGravityZ:
+  readmem(WorldGravityZ,5)
+
+newmem:
+
+code:
+  movss xmm0,[WorldGravityZ_Custom]
+  jmp return
+
+WorldGravityZ_Custom:
+  dd (float)-98
+
+WorldGravityZ:
+  jmp newmem
+return:
+registersymbol(WorldGravityZ)
+registersymbol(WorldGravityZ_Custom)
+registersymbol(bytesWorldGravityZ)
+
+[DISABLE]
+
+WorldGravityZ:
+  readmem(bytesWorldGravityZ,5)
+
+unregistersymbol(WorldGravityZ)
+unregistersymbol(WorldGravityZ_Custom)
+unregistersymbol(bytesWorldGravityZ)
+dealloc(newmem)
+dealloc(bytesWorldGravityZ)
+
+{
+// ORIGINAL CODE - INJECTION POINT: Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+5A
+
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+2E: 48 89 7C 24 30           - mov [rsp+30],rdi
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+33: E8 28 47 12 00           - call Oregon-Win64-Shipping.UPhysicsSettings::StaticClass
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+38: 48 8B F8                 - mov rdi,rax
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+3B: 48 8B 80 18 01 00 00     - mov rax,[rax+Oregon-Win64-Shipping._Init_thread_epoch]
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+42: 48 85 C0                 - test rax,rax
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+45: 75 13                    - jne Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+5A
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+47: 48 8B 17                 - mov rdx,[rdi]
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+4A: 48 8B CF                 - mov rcx,rdi
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+4D: FF 92 A8 03 00 00        - call qword ptr [rdx+000003A8]
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+53: 48 8B 87 18 01 00 00     - mov rax,[rdi+Oregon-Win64-Shipping._Init_thread_epoch]
+// ---------- INJECTING HERE ----------
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+5A: F3 0F 10 40 38           - movss xmm0,[rax+38]
+// ---------- DONE INJECTING  ----------
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+5F: 48 8B 7C 24 30           - mov rdi,[rsp+30]
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+64: F3 0F 11 83 50 02 00 00  - movss [rbx+00000250],xmm0
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+6C: 48 83 C4 20              - add rsp,20
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+70: 5B                       - pop rbx
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+71: C3                       - ret
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+72: F3 0F 10 81 50 02 00 00  - movss xmm0,[rcx+00000250]
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+7A: 48 83 C4 20              - add rsp,20
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+7E: 5B                       - pop rbx
+Oregon-Win64-Shipping.AWorldSettings::GetGravityZ+7F: C3                       - ret
+Oregon-Win64-Shipping.UWorldComposition::GetLevelOffset: 48 89 5C 24 08           - mov [rsp+08],rbx
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>330585</ID>
+          <Description>"world gravity z"</Description>
+          <DropDownList DisplayValueAsItem="1">-980:Default
+</DropDownList>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>WorldGravityZ_Custom</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>330651</ID>
+      <Description>"world time dilation modifier"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : Icarus-Win64-Shipping.exe
+  Version: 
+  Date   : 2022-11-04
+  Author : Akira Fudo
+
+4.17.2.0:
+   F3 0F 59 81 E0 04 00 00
+   F3 0F ? ? ? ? ? ? F3 0F ? ? ? ? ? ? 0F 28 ? F3 0F ? ? ? ? ? ? 0F 2F ? 73 ? 0F 28
+
+   F3 0F 59 83 E0 04 00 00
+   F3 0F ? ? ? ? ? ? 0F 28 ? 48 8B ? 48 8B ? F3 0F ? ? ? ? ? ? F3 0F
+
+4.26.1.0
+   F3 0F 59 81 E8 02 00 00
+   F3 0F ? ? ? ? ? ? F3 0F ? ? ? ? ? ? C3 CC CC CC CC CC CC CC 40
+
+4.27.2.0:
+   F3 0F 10 81 ?? ?? 00 00 F3 0F 59 81 ?? ?? 00 00 F3 0F 59 81 ?? ?? 00 00 C3
+
+   Icarus-Win64-Shipping.AWorldSettings::GetEffectiveTimeDilation+8
+   F3 0F 59 81 E8 02 00 00
+   F3 0F ? ? ? ? ? ? F3 0F ? ? ? ? ? ? C3 CC CC CC CC CC CC CC 4C 8B
+
+   F3 0F 59 81 18 03 00 00
+   F3 0F ? ? ? ? ? ? F3 0F ? ? ? ? ? ? C3 CC CC CC CC CC CC CC 40
+
+   F3 0F 59 81 20 03 00 00
+   F3 0F ? ? ? ? ? ? F3 0F ? ? ? ? ? ? C3 CC CC CC CC CC CC CC 48 89 ? ? ? 56
+}
+
+[ENABLE]
+
+aobscanmodule(TimeDilation,$process,F3 0F 59 81 20 03 00 00 F3)
+alloc(newmem,$100,TimeDilation)
+alloc(bytesTimeDilation,8)
+
+label(code)
+label(return)
+
+bytesTimeDilation:
+  readmem(TimeDilation,8)
+
+newmem:
+
+code:
+  mulss xmm0,[TimeDilation_F]
+  jmp return
+
+TimeDilation_F:
+  dd (float)0.5
+
+TimeDilation:
+  jmp newmem
+  nop 3
+return:
+registersymbol(TimeDilation)
+registersymbol(TimeDilation_F)
+registersymbol(bytesTimeDilation)
+
+[DISABLE]
+
+TimeDilation:
+  readmem(bytesTimeDilation,8)
+
+unregistersymbol(TimeDilation)
+unregistersymbol(TimeDilation_F)
+unregistersymbol(bytesTimeDilation)
+dealloc(newmem)
+dealloc(bytesTimeDilation)
+
+{
+// ORIGINAL CODE - INJECTION POINT: odyssey-Win64-Shipping.exe+29F5E78
+
+odyssey-Win64-Shipping.exe+29F5E64: 41 5F                    - pop r15
+odyssey-Win64-Shipping.exe+29F5E66: 41 5E                    - pop r14
+odyssey-Win64-Shipping.exe+29F5E68: 41 5D                    - pop r13
+odyssey-Win64-Shipping.exe+29F5E6A: 5F                       - pop rdi
+odyssey-Win64-Shipping.exe+29F5E6B: 5B                       - pop rbx
+odyssey-Win64-Shipping.exe+29F5E6C: C3                       - ret
+odyssey-Win64-Shipping.exe+29F5E6D: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E6E: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E6F: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E70: F3 0F 10 81 1C 03 00 00  - movss xmm0,[rcx+0000031C]
+// ---------- INJECTING HERE ----------
+odyssey-Win64-Shipping.exe+29F5E78: F3 0F 59 81 18 03 00 00  - mulss xmm0,[rcx+00000318]
+// ---------- DONE INJECTING  ----------
+odyssey-Win64-Shipping.exe+29F5E80: F3 0F 59 81 20 03 00 00  - mulss xmm0,[rcx+00000320]
+odyssey-Win64-Shipping.exe+29F5E88: C3                       - ret
+odyssey-Win64-Shipping.exe+29F5E89: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E8A: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E8B: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E8C: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E8D: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E8E: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E8F: CC                       - int 3
+odyssey-Win64-Shipping.exe+29F5E90: 40 53                    - push rbx
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>330652</ID>
+          <Description>"time dilation"</Description>
+          <DropDownList DisplayValueAsItem="1">1:Default
+</DropDownList>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Float</VariableType>
+          <Address>TimeDilation_F</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>43</ID>
+      <Description>"infinite health"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-06
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(health,AtomicHeart-Win64-Shipping.exe,F3 41 0F 10 40 54 EB) // should be unique
+alloc(newmem,$1000,health)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movss xmm0,[r8+54]
+  mov [r8+50],(float)900
+  mov [r8+54],(float)900
+  jmp return
+
+health:
+  jmp newmem
+  nop
+return:
+registersymbol(health)
+
+[DISABLE]
+
+health:
+  db F3 41 0F 10 40 54
+
+unregistersymbol(health)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+1BB79F8
+
+AtomicHeart-Win64-Shipping.exe+1BB79DA: 48 8D 0C 40        - lea rcx,[rax+rax*2]
+AtomicHeart-Win64-Shipping.exe+1BB79DE: 48 8B 04 D3        - mov rax,[rbx+rdx*8]
+AtomicHeart-Win64-Shipping.exe+1BB79E2: 48 8D 14 C8        - lea rdx,[rax+rcx*8]
+AtomicHeart-Win64-Shipping.exe+1BB79E6: EB 03              - jmp AtomicHeart-Win64-Shipping.exe+1BB79EB
+AtomicHeart-Win64-Shipping.exe+1BB79E8: 49 8B D2           - mov rdx,r10
+AtomicHeart-Win64-Shipping.exe+1BB79EB: 8B 42 08           - mov eax,[rdx+08]
+AtomicHeart-Win64-Shipping.exe+1BB79EE: 0F 57 C9           - xorps xmm1,xmm1
+AtomicHeart-Win64-Shipping.exe+1BB79F1: C1 E8 1D           - shr eax,1D
+AtomicHeart-Win64-Shipping.exe+1BB79F4: A8 01              - test al,01
+AtomicHeart-Win64-Shipping.exe+1BB79F6: 75 08              - jne AtomicHeart-Win64-Shipping.exe+1BB7A00
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+1BB79F8: F3 41 0F 10 40 54  - movss xmm0,[r8+54]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+1BB79FE: EB 03              - jmp AtomicHeart-Win64-Shipping.exe+1BB7A03
+AtomicHeart-Win64-Shipping.exe+1BB7A00: 0F 57 C0           - xorps xmm0,xmm0
+AtomicHeart-Win64-Shipping.exe+1BB7A03: 45 3B CB           - cmp r9d,r11d
+AtomicHeart-Win64-Shipping.exe+1BB7A06: 7D 24              - jnl AtomicHeart-Win64-Shipping.exe+1BB7A2C
+AtomicHeart-Win64-Shipping.exe+1BB7A08: 41 8B C1           - mov eax,r9d
+AtomicHeart-Win64-Shipping.exe+1BB7A0B: 99                 - cdq 
+AtomicHeart-Win64-Shipping.exe+1BB7A0C: 0F B7 D2           - movzx edx,dx
+AtomicHeart-Win64-Shipping.exe+1BB7A0F: 03 C2              - add eax,edx
+AtomicHeart-Win64-Shipping.exe+1BB7A11: 8B C8              - mov ecx,eax
+AtomicHeart-Win64-Shipping.exe+1BB7A13: 0F B7 C0           - movzx eax,ax
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>28</ID>
+      <Description>"bhop a"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(bhop_a,AtomicHeart-Win64-Shipping.exe,F3 41 0F 58 06 F3 41 0F 11 06 F3) // should be unique
+alloc(newmem,$1000,bhop_a)
+alloc(addition,4)
+label(code)
+label(return)
+
+addition:
+dd (float)1.02
+
+newmem:
+
+code:
+  addss xmm0,[r14]
+  mulss xmm0,[addition]
+  jmp return
+
+bhop_a:
+  jmp newmem
+return:
+registersymbol(bhop_a)
+
+[DISABLE]
+
+bhop_a:
+  db F3 41 0F 58 06
+
+unregistersymbol(bhop_a)
+dealloc(newmem)
+dealloc(addition)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E38C88
+
+AtomicHeart-Win64-Shipping.exe+3E38C51: C7 86 EC 00 00 00 00 00 00 00  - mov [rsi+000000EC],00000000
+AtomicHeart-Win64-Shipping.exe+3E38C5B: 89 86 C0 02 00 00              - mov [rsi+000002C0],eax
+AtomicHeart-Win64-Shipping.exe+3E38C61: 41 0F 28 C8                    - movaps xmm1,xmm8
+AtomicHeart-Win64-Shipping.exe+3E38C65: 48 8B CE                       - mov rcx,rsi
+AtomicHeart-Win64-Shipping.exe+3E38C68: E8 A3 DE FF FF                 - call AtomicHeart-Win64-Shipping.exe+3E36B10
+AtomicHeart-Win64-Shipping.exe+3E38C6D: F3 0F 10 95 18 03 00 00        - movss xmm2,[rbp+00000318]
+AtomicHeart-Win64-Shipping.exe+3E38C75: 48 8D 95 1C 02 00 00           - lea rdx,[rbp+0000021C]
+AtomicHeart-Win64-Shipping.exe+3E38C7C: 48 8B CE                       - mov rcx,rsi
+AtomicHeart-Win64-Shipping.exe+3E38C7F: E8 2C E0 FF FF                 - call AtomicHeart-Win64-Shipping.exe+3E36CB0
+AtomicHeart-Win64-Shipping.exe+3E38C84: F3 0F 10 00                    - movss xmm0,[rax]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E38C88: F3 41 0F 58 06                 - addss xmm0,[r14]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E38C8D: F3 41 0F 11 06                 - movss [r14],xmm0
+AtomicHeart-Win64-Shipping.exe+3E38C92: F3 0F 10 48 04                 - movss xmm1,[rax+04]
+AtomicHeart-Win64-Shipping.exe+3E38C97: F3 41 0F 58 4E 04              - addss xmm1,[r14+04]
+AtomicHeart-Win64-Shipping.exe+3E38C9D: F3 41 0F 11 4E 04              - movss [r14+04],xmm1
+AtomicHeart-Win64-Shipping.exe+3E38CA3: F3 0F 10 50 08                 - movss xmm2,[rax+08]
+AtomicHeart-Win64-Shipping.exe+3E38CA8: F3 41 0F 58 56 08              - addss xmm2,[r14+08]
+AtomicHeart-Win64-Shipping.exe+3E38CAE: F3 41 0F 11 56 08              - movss [r14+08],xmm2
+AtomicHeart-Win64-Shipping.exe+3E38CB4: 48 8B 86 D0 00 00 00           - mov rax,[rsi+000000D0]
+AtomicHeart-Win64-Shipping.exe+3E38CBB: 0F 10 80 30 02 00 00           - movups xmm0,[rax+00000230]
+AtomicHeart-Win64-Shipping.exe+3E38CC2: 0F B6 86 B4 03 00 00           - movzx eax,byte ptr [rsi+000003B4]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>29</ID>
+      <Description>"bhop b"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(bhop_b,AtomicHeart-Win64-Shipping.exe,F3 41 0F 58 4E 04 F3 41 0F 11 4E) // should be unique
+alloc(newmem,$1000,bhop_b)
+alloc(addition,4)
+label(code)
+label(return)
+
+addition:
+dd (float)1.02
+
+newmem:
+
+code:
+  addss xmm1,[r14+04]
+  mulss xmm1,[addition]
+  jmp return
+
+bhop_b:
+  jmp newmem
+  nop
+return:
+registersymbol(bhop_b)
+
+[DISABLE]
+
+bhop_b:
+  db F3 41 0F 58 4E 04
+
+unregistersymbol(bhop_b)
+dealloc(newmem)
+dealloc(addition)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E38C97
+
+AtomicHeart-Win64-Shipping.exe+3E38C65: 48 8B CE                 - mov rcx,rsi
+AtomicHeart-Win64-Shipping.exe+3E38C68: E8 A3 DE FF FF           - call AtomicHeart-Win64-Shipping.exe+3E36B10
+AtomicHeart-Win64-Shipping.exe+3E38C6D: F3 0F 10 95 18 03 00 00  - movss xmm2,[rbp+00000318]
+AtomicHeart-Win64-Shipping.exe+3E38C75: 48 8D 95 1C 02 00 00     - lea rdx,[rbp+0000021C]
+AtomicHeart-Win64-Shipping.exe+3E38C7C: 48 8B CE                 - mov rcx,rsi
+AtomicHeart-Win64-Shipping.exe+3E38C7F: E8 2C E0 FF FF           - call AtomicHeart-Win64-Shipping.exe+3E36CB0
+AtomicHeart-Win64-Shipping.exe+3E38C84: F3 0F 10 00              - movss xmm0,[rax]
+AtomicHeart-Win64-Shipping.exe+3E38C88: F3 41 0F 58 06           - addss xmm0,[r14]
+AtomicHeart-Win64-Shipping.exe+3E38C8D: F3 41 0F 11 06           - movss [r14],xmm0
+AtomicHeart-Win64-Shipping.exe+3E38C92: F3 0F 10 48 04           - movss xmm1,[rax+04]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E38C97: F3 41 0F 58 4E 04        - addss xmm1,[r14+04]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E38C9D: F3 41 0F 11 4E 04        - movss [r14+04],xmm1
+AtomicHeart-Win64-Shipping.exe+3E38CA3: F3 0F 10 50 08           - movss xmm2,[rax+08]
+AtomicHeart-Win64-Shipping.exe+3E38CA8: F3 41 0F 58 56 08        - addss xmm2,[r14+08]
+AtomicHeart-Win64-Shipping.exe+3E38CAE: F3 41 0F 11 56 08        - movss [r14+08],xmm2
+AtomicHeart-Win64-Shipping.exe+3E38CB4: 48 8B 86 D0 00 00 00     - mov rax,[rsi+000000D0]
+AtomicHeart-Win64-Shipping.exe+3E38CBB: 0F 10 80 30 02 00 00     - movups xmm0,[rax+00000230]
+AtomicHeart-Win64-Shipping.exe+3E38CC2: 0F B6 86 B4 03 00 00     - movzx eax,byte ptr [rsi+000003B4]
+AtomicHeart-Win64-Shipping.exe+3E38CC9: 0F 28 D8                 - movaps xmm3,xmm0
+AtomicHeart-Win64-Shipping.exe+3E38CCC: 0F C6 D8 55              - shufps xmm3,xmm0,55
+AtomicHeart-Win64-Shipping.exe+3E38CD0: F3 0F 11 5D 04           - movss [rbp+04],xmm3
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"air control"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(air_control,AtomicHeart-Win64-Shipping.exe,F3 0F 10 99 E4 01 00 00) // should be unique
+alloc(newmem,$1000,air_control)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movss xmm3,[rcx+000001E4]
+  mov [rcx+000001E4],(float)5.0
+  jmp return
+
+air_control:
+  jmp newmem
+  nop 3
+return:
+registersymbol(air_control)
+
+[DISABLE]
+
+air_control:
+  db F3 0F 10 99 E4 01 00 00
+
+unregistersymbol(air_control)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+17DFD812
+
+AtomicHeart-Win64-Shipping.exe+17DFD7E7: 89 42 08                 - mov [rdx+08],eax
+AtomicHeart-Win64-Shipping.exe+17DFD7EA: 80 B9 C0 0A 00 00 00     - cmp byte ptr [rcx+00000AC0],00
+AtomicHeart-Win64-Shipping.exe+17DFD7F1: 0F 85 A1 01 00 00        - jne AtomicHeart-Win64-Shipping.exe+17DFD998
+AtomicHeart-Win64-Shipping.exe+17DFD7F7: F3 0F 59 C0              - mulss xmm0,xmm0
+AtomicHeart-Win64-Shipping.exe+17DFD7FB: F3 0F 59 C9              - mulss xmm1,xmm1
+AtomicHeart-Win64-Shipping.exe+17DFD7FF: F3 0F 58 C8              - addss xmm1,xmm0
+AtomicHeart-Win64-Shipping.exe+17DFD803: 0F 57 C0                 - xorps xmm0,xmm0
+AtomicHeart-Win64-Shipping.exe+17DFD806: 0F 2F C8                 - comiss xmm1,xmm0
+AtomicHeart-Win64-Shipping.exe+17DFD809: 0F 86 89 01 00 00        - jbe AtomicHeart-Win64-Shipping.exe+17DFD998
+AtomicHeart-Win64-Shipping.exe+17DFD80F: 48 8B 01                 - mov rax,[rcx]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+17DFD812: F3 0F 10 99 E4 01 00 00  - movss xmm3,[rcx+000001E4]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+17DFD81A: 48 89 54 24 20           - mov [rsp+20],rdx
+AtomicHeart-Win64-Shipping.exe+17DFD81F: 48 8D 54 24 30           - lea rdx,[rsp+30]
+AtomicHeart-Win64-Shipping.exe+17DFD824: 0F 29 74 24 70           - movaps [rsp+70],xmm6
+AtomicHeart-Win64-Shipping.exe+17DFD829: FF 90 60 07 00 00        - call qword ptr [rax+00000760]
+AtomicHeart-Win64-Shipping.exe+17DFD82F: 48 89 F9                 - mov rcx,rdi
+AtomicHeart-Win64-Shipping.exe+17DFD832: F2 0F 10 00              - movsd xmm0,[rax]
+AtomicHeart-Win64-Shipping.exe+17DFD836: F2 0F 11 03              - movsd [rbx],xmm0
+AtomicHeart-Win64-Shipping.exe+17DFD83A: 8B 40 08                 - mov eax,[rax+08]
+AtomicHeart-Win64-Shipping.exe+17DFD83D: 89 43 08                 - mov [rbx+08],eax
+AtomicHeart-Win64-Shipping.exe+17DFD840: 48 8B 07                 - mov rax,[rdi]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>31</ID>
+      <Description>"ground friction"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(ground_friction,AtomicHeart-Win64-Shipping.exe,CF FF 93 F8 06 00 00 F3 0F 10 97 8C 01 00 00) // should be unique
+alloc(newmem,$1000,ground_friction)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movss xmm2,[rdi+0000018C]
+  mov [rdi+0000018C],(float)1.0
+  jmp return
+
+ground_friction+07:
+  jmp newmem
+  nop 3
+return:
+registersymbol(ground_friction)
+
+[DISABLE]
+
+ground_friction+07:
+  db F3 0F 10 97 8C 01 00 00
+
+unregistersymbol(ground_friction)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E3B9E9
+
+AtomicHeart-Win64-Shipping.exe+3E3B9B1: 80 BF C0 0A 00 00 00           - cmp byte ptr [rdi+00000AC0],00
+AtomicHeart-Win64-Shipping.exe+3E3B9B8: F2 44 0F 10 87 E4 00 00 00     - movsd xmm8,[rdi+000000E4]
+AtomicHeart-Win64-Shipping.exe+3E3B9C1: 44 8B A7 EC 00 00 00           - mov r12d,[rdi+000000EC]
+AtomicHeart-Win64-Shipping.exe+3E3B9C8: C7 87 54 02 00 00 00 00 00 00  - mov [rdi+00000254],00000000
+AtomicHeart-Win64-Shipping.exe+3E3B9D2: 75 32                          - jne AtomicHeart-Win64-Shipping.exe+3E3BA06
+AtomicHeart-Win64-Shipping.exe+3E3B9D4: F6 87 E8 09 00 00 02           - test byte ptr [rdi+000009E8],02
+AtomicHeart-Win64-Shipping.exe+3E3B9DB: 75 29                          - jne AtomicHeart-Win64-Shipping.exe+3E3BA06
+AtomicHeart-Win64-Shipping.exe+3E3B9DD: 48 8B 1F                       - mov rbx,[rdi]
+AtomicHeart-Win64-Shipping.exe+3E3B9E0: 48 8B CF                       - mov rcx,rdi
+AtomicHeart-Win64-Shipping.exe+3E3B9E3: FF 93 F8 06 00 00              - call qword ptr [rbx+000006F8]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E3B9E9: F3 0F 10 97 8C 01 00 00        - movss xmm2,[rdi+0000018C]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E3B9F1: 45 33 C9                       - xor r9d,r9d
+AtomicHeart-Win64-Shipping.exe+3E3B9F4: 0F 28 CE                       - movaps xmm1,xmm6
+AtomicHeart-Win64-Shipping.exe+3E3B9F7: F3 0F 11 44 24 20              - movss [rsp+20],xmm0
+AtomicHeart-Win64-Shipping.exe+3E3B9FD: 48 8B CF                       - mov rcx,rdi
+AtomicHeart-Win64-Shipping.exe+3E3BA00: FF 93 C0 06 00 00              - call qword ptr [rbx+000006C0]
+AtomicHeart-Win64-Shipping.exe+3E3BA06: 0F 28 CE                       - movaps xmm1,xmm6
+AtomicHeart-Win64-Shipping.exe+3E3BA09: 48 8B CF                       - mov rcx,rdi
+AtomicHeart-Win64-Shipping.exe+3E3BA0C: E8 FF B0 FF FF                 - call AtomicHeart-Win64-Shipping.exe+3E36B10
+AtomicHeart-Win64-Shipping.exe+3E3BA11: 41 0F 28 D2                    - movaps xmm2,xmm10
+AtomicHeart-Win64-Shipping.exe+3E3BA15: 48 8D 95 20 02 00 00           - lea rdx,[rbp+00000220]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>32</ID>
+      <Description>"slope angle"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(slope_angle,AtomicHeart-Win64-Shipping.exe,F3 0F 10 8F 84 01 00 00) // should be unique
+alloc(newmem,$1000,slope_angle)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movss xmm1,[rdi+00000184]
+  mov [rdi+00000184],(float)0
+  jmp return
+
+slope_angle:
+  jmp newmem
+  nop 3
+return:
+registersymbol(slope_angle)
+
+[DISABLE]
+
+slope_angle:
+  db F3 0F 10 8F 84 01 00 00
+
+unregistersymbol(slope_angle)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E3FD2C
+
+AtomicHeart-Win64-Shipping.exe+3E3FD01: E8 8A 52 86 FE           - call AtomicHeart-Win64-Shipping.exe+26A4F90
+AtomicHeart-Win64-Shipping.exe+3E3FD06: 48 8B 97 68 01 00 00     - mov rdx,[rdi+00000168]
+AtomicHeart-Win64-Shipping.exe+3E3FD0D: 48 8B C8                 - mov rcx,rax
+AtomicHeart-Win64-Shipping.exe+3E3FD10: 4C 8B 00                 - mov r8,[rax]
+AtomicHeart-Win64-Shipping.exe+3E3FD13: 41 FF 90 90 05 00 00     - call qword ptr [r8+00000590]
+AtomicHeart-Win64-Shipping.exe+3E3FD1A: 84 C0                    - test al,al
+AtomicHeart-Win64-Shipping.exe+3E3FD1C: 74 4E                    - je AtomicHeart-Win64-Shipping.exe+3E3FD6C
+AtomicHeart-Win64-Shipping.exe+3E3FD1E: F3 0F 10 43 38           - movss xmm0,[rbx+38]
+AtomicHeart-Win64-Shipping.exe+3E3FD23: 0F 2F 05 42 8D 92 02     - comiss xmm0,[AtomicHeart-Win64-Shipping.exe+6768A6C]
+AtomicHeart-Win64-Shipping.exe+3E3FD2A: 72 40                    - jb AtomicHeart-Win64-Shipping.exe+3E3FD6C
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E3FD2C: F3 0F 10 8F 84 01 00 00  - movss xmm1,[rdi+00000184]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E3FD34: 48 8D 4B 70              - lea rcx,[rbx+70]
+AtomicHeart-Win64-Shipping.exe+3E3FD38: E8 53 52 86 FE           - call AtomicHeart-Win64-Shipping.exe+26A4F90
+AtomicHeart-Win64-Shipping.exe+3E3FD3D: 48 85 C0                 - test rax,rax
+AtomicHeart-Win64-Shipping.exe+3E3FD40: 74 18                    - je AtomicHeart-Win64-Shipping.exe+3E3FD5A
+AtomicHeart-Win64-Shipping.exe+3E3FD42: 48 8B C8                 - mov rcx,rax
+AtomicHeart-Win64-Shipping.exe+3E3FD45: E8 46 CE 40 00           - call AtomicHeart-Win64-Shipping.exe+424CB90
+AtomicHeart-Win64-Shipping.exe+3E3FD4A: 48 8B C8                 - mov rcx,rax
+AtomicHeart-Win64-Shipping.exe+3E3FD4D: E8 1E 29 01 00           - call AtomicHeart-Win64-Shipping.exe+3E52670
+AtomicHeart-Win64-Shipping.exe+3E3FD52: 0F 28 C8                 - movaps xmm1,xmm0
+AtomicHeart-Win64-Shipping.exe+3E3FD55: F3 0F 10 43 38           - movss xmm0,[rbx+38]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>33</ID>
+      <Description>"velocity"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(velocity,AtomicHeart-Win64-Shipping.exe,F3 0F 11 83 E4 00 00 00 F3 0F 10 48) // should be unique
+alloc(newmem,$1000,velocity)
+globalalloc(_velocity,4)
+label(code)
+label(return)
+
+newmem:
+  push rax
+  mov rax,_velocity
+  mov [rax],rbx
+  pop rax
+
+code:
+  movss [rbx+000000E4],xmm0
+  jmp return
+
+velocity:
+  jmp newmem
+  nop 3
+return:
+registersymbol(velocity)
+
+[DISABLE]
+
+velocity:
+  db F3 0F 11 83 E4 00 00 00
+
+unregistersymbol(velocity)
+dealloc(newmem)
+dealloc(_velocity)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E2D75E
+
+AtomicHeart-Win64-Shipping.exe+3E2D727: C7 83 2C 03 00 00 00 00 80 3F  - mov [rbx+0000032C],3F800000
+AtomicHeart-Win64-Shipping.exe+3E2D731: 80 A3 B4 03 00 00 DF           - and byte ptr [rbx+000003B4],-21
+AtomicHeart-Win64-Shipping.exe+3E2D738: 80 BB 88 01 00 00 03           - cmp byte ptr [rbx+00000188],03
+AtomicHeart-Win64-Shipping.exe+3E2D73F: 75 5F                          - jne AtomicHeart-Win64-Shipping.exe+3E2D7A0
+AtomicHeart-Win64-Shipping.exe+3E2D741: 48 8B 03                       - mov rax,[rbx]
+AtomicHeart-Win64-Shipping.exe+3E2D744: 48 8D 54 24 30                 - lea rdx,[rsp+30]
+AtomicHeart-Win64-Shipping.exe+3E2D749: 48 8B CB                       - mov rcx,rbx
+AtomicHeart-Win64-Shipping.exe+3E2D74C: FF 90 68 06 00 00              - call qword ptr [rax+00000668]
+AtomicHeart-Win64-Shipping.exe+3E2D752: F3 0F 10 00                    - movss xmm0,[rax]
+AtomicHeart-Win64-Shipping.exe+3E2D756: F3 0F 58 83 E4 00 00 00        - addss xmm0,[rbx+000000E4]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E2D75E: F3 0F 11 83 E4 00 00 00        - movss [rbx+000000E4],xmm0
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E2D766: F3 0F 10 48 04                 - movss xmm1,[rax+04]
+AtomicHeart-Win64-Shipping.exe+3E2D76B: F3 0F 58 8B E8 00 00 00        - addss xmm1,[rbx+000000E8]
+AtomicHeart-Win64-Shipping.exe+3E2D773: F3 0F 11 8B E8 00 00 00        - movss [rbx+000000E8],xmm1
+AtomicHeart-Win64-Shipping.exe+3E2D77B: F3 0F 10 40 08                 - movss xmm0,[rax+08]
+AtomicHeart-Win64-Shipping.exe+3E2D780: F3 0F 58 83 EC 00 00 00        - addss xmm0,[rbx+000000EC]
+AtomicHeart-Win64-Shipping.exe+3E2D788: F3 0F 11 83 EC 00 00 00        - movss [rbx+000000EC],xmm0
+AtomicHeart-Win64-Shipping.exe+3E2D790: 48 8B 8B 68 01 00 00           - mov rcx,[rbx+00000168]
+AtomicHeart-Win64-Shipping.exe+3E2D797: 48 8B 01                       - mov rax,[rcx]
+AtomicHeart-Win64-Shipping.exe+3E2D79A: FF 90 E8 07 00 00              - call qword ptr [rax+000007E8]
+AtomicHeart-Win64-Shipping.exe+3E2D7A0: 48 8B 03                       - mov rax,[rbx]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>21</ID>
+      <Description>"x"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_velocity</Address>
+      <Offsets>
+        <Offset>e4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>22</ID>
+      <Description>"y"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_velocity</Address>
+      <Offsets>
+        <Offset>e8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>23</ID>
+      <Description>"z"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_velocity</Address>
+      <Offsets>
+        <Offset>ec</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>34</ID>
+      <Description>"coordinates"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-05
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(coordinates,AtomicHeart-Win64-Shipping.exe,18 00 00 48 85 C9 74 26 0F 10 89 30 02 00 00) // should be unique
+alloc(newmem,$1000,coordinates)
+globalalloc(_coordinates,4)
+label(code)
+label(return)
+
+newmem:
+  push rax
+  mov rax,_coordinates
+  mov [rax],rcx
+  pop rax
+
+code:
+  movups xmm1,[rcx+00000230]
+  jmp return
+
+coordinates+08:
+  jmp newmem
+  nop 2
+return:
+registersymbol(coordinates)
+
+[DISABLE]
+
+coordinates+08:
+  db 0F 10 89 30 02 00 00
+
+unregistersymbol(coordinates)
+dealloc(newmem)
+dealloc(_coordinates)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+1EC0EAA
+
+AtomicHeart-Win64-Shipping.exe+1EC0E7B: F3 0F 59 D2              - mulss xmm2,xmm2
+AtomicHeart-Win64-Shipping.exe+1EC0E7F: F3 0F 5C 4C 24 28        - subss xmm1,[rsp+28]
+AtomicHeart-Win64-Shipping.exe+1EC0E85: F3 0F 59 DB              - mulss xmm3,xmm3
+AtomicHeart-Win64-Shipping.exe+1EC0E89: F3 0F 59 C9              - mulss xmm1,xmm1
+AtomicHeart-Win64-Shipping.exe+1EC0E8D: F3 0F 58 DA              - addss xmm3,xmm2
+AtomicHeart-Win64-Shipping.exe+1EC0E91: F3 0F 58 8B 30 18 00 00  - addss xmm1,[rbx+00001830]
+AtomicHeart-Win64-Shipping.exe+1EC0E99: F3 0F 58 D9              - addss xmm3,xmm1
+AtomicHeart-Win64-Shipping.exe+1EC0E9D: F3 0F 11 9B 30 18 00 00  - movss [rbx+00001830],xmm3
+AtomicHeart-Win64-Shipping.exe+1EC0EA5: 48 85 C9                 - test rcx,rcx
+AtomicHeart-Win64-Shipping.exe+1EC0EA8: 74 26                    - je AtomicHeart-Win64-Shipping.exe+1EC0ED0
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+1EC0EAA: 0F 10 89 30 02 00 00     - movups xmm1,[rcx+00000230]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+1EC0EB1: 0F 28 C1                 - movaps xmm0,xmm1
+AtomicHeart-Win64-Shipping.exe+1EC0EB4: F3 0F 11 4C 24 20        - movss [rsp+20],xmm1
+AtomicHeart-Win64-Shipping.exe+1EC0EBA: 0F C6 C1 55              - shufps xmm0,xmm1,55
+AtomicHeart-Win64-Shipping.exe+1EC0EBE: 0F C6 C9 AA              - shufps xmm1,xmm1,-56
+AtomicHeart-Win64-Shipping.exe+1EC0EC2: F3 0F 11 4C 24 28        - movss [rsp+28],xmm1
+AtomicHeart-Win64-Shipping.exe+1EC0EC8: F3 0F 11 44 24 24        - movss [rsp+24],xmm0
+AtomicHeart-Win64-Shipping.exe+1EC0ECE: EB 18                    - jmp AtomicHeart-Win64-Shipping.exe+1EC0EE8
+AtomicHeart-Win64-Shipping.exe+1EC0ED0: F2 0F 10 05 A0 8C 1E 05  - movsd xmm0,[AtomicHeart-Win64-Shipping.exe+70A9B78]
+AtomicHeart-Win64-Shipping.exe+1EC0ED8: 8B 05 A2 8C 1E 05        - mov eax,[AtomicHeart-Win64-Shipping.exe+70A9B80]
+AtomicHeart-Win64-Shipping.exe+1EC0EDE: F2 0F 11 44 24 20        - movsd [rsp+20],xmm0
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>25</ID>
+      <Description>"x"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_coordinates</Address>
+      <Offsets>
+        <Offset>230</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>26</ID>
+      <Description>"y"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_coordinates</Address>
+      <Offsets>
+        <Offset>234</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>27</ID>
+      <Description>"z"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_coordinates</Address>
+      <Offsets>
+        <Offset>238</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>35</ID>
+      <Description>"position"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Array of byte</VariableType>
+      <ByteLength>12</ByteLength>
+      <Address>_coordinates</Address>
+      <Offsets>
+        <Offset>230</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>38</ID>
+      <Description>"jump height"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-06
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(jump_height,AtomicHeart-Win64-Shipping.exe,F3 0F 10 87 78 01 00 00 45) // should be unique
+alloc(newmem,$1000,jump_height)
+globalalloc(_jump_height,4)
+label(code)
+label(return)
+
+newmem:
+  push rax
+  mov rax,_jump_height
+  mov [rax],rdi
+  pop rax
+
+code:
+  movss xmm0,[rdi+00000178]
+  jmp return
+
+jump_height:
+  jmp newmem
+  nop 3
+return:
+registersymbol(jump_height)
+
+[DISABLE]
+
+jump_height:
+  db F3 0F 10 87 78 01 00 00
+
+unregistersymbol(jump_height)
+dealloc(newmem)
+dealloc(_jump_height)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E2C967
+
+AtomicHeart-Win64-Shipping.exe+3E2C934: FF 93 20 02 00 00        - call qword ptr [rbx+00000220]
+AtomicHeart-Win64-Shipping.exe+3E2C93A: 80 7C 24 30 00           - cmp byte ptr [rsp+30],00
+AtomicHeart-Win64-Shipping.exe+3E2C93F: 48 8B 5C 24 38           - mov rbx,[rsp+38]
+AtomicHeart-Win64-Shipping.exe+3E2C944: 74 59                    - je AtomicHeart-Win64-Shipping.exe+3E2C99F
+AtomicHeart-Win64-Shipping.exe+3E2C946: F6 87 08 01 00 00 10     - test byte ptr [rdi+00000108],10
+AtomicHeart-Win64-Shipping.exe+3E2C94D: 74 18                    - je AtomicHeart-Win64-Shipping.exe+3E2C967
+AtomicHeart-Win64-Shipping.exe+3E2C94F: F3 0F 10 87 F8 00 00 00  - movss xmm0,[rdi+000000F8]
+AtomicHeart-Win64-Shipping.exe+3E2C957: 0F 54 05 22 09 94 02     - andps xmm0,[AtomicHeart-Win64-Shipping.exe+676D280]
+AtomicHeart-Win64-Shipping.exe+3E2C95E: 0F 2E 05 8B C8 93 02     - ucomiss xmm0,[AtomicHeart-Win64-Shipping.exe+67691F0]
+AtomicHeart-Win64-Shipping.exe+3E2C965: 74 38                    - je AtomicHeart-Win64-Shipping.exe+3E2C99F
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E2C967: F3 0F 10 87 78 01 00 00  - movss xmm0,[rdi+00000178]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E2C96F: 45 33 C0                 - xor r8d,r8d
+AtomicHeart-Win64-Shipping.exe+3E2C972: F3 0F 5F 87 EC 00 00 00  - maxss xmm0,[rdi+000000EC]
+AtomicHeart-Win64-Shipping.exe+3E2C97A: 48 8B 07                 - mov rax,[rdi]
+AtomicHeart-Win64-Shipping.exe+3E2C97D: 48 8B CF                 - mov rcx,rdi
+AtomicHeart-Win64-Shipping.exe+3E2C980: 41 8D 50 03              - lea edx,[r8+03]
+AtomicHeart-Win64-Shipping.exe+3E2C984: F3 0F 11 87 EC 00 00 00  - movss [rdi+000000EC],xmm0
+AtomicHeart-Win64-Shipping.exe+3E2C98C: FF 90 B0 05 00 00        - call qword ptr [rax+000005B0]
+AtomicHeart-Win64-Shipping.exe+3E2C992: B0 01                    - mov al,01
+AtomicHeart-Win64-Shipping.exe+3E2C994: 48 8B 74 24 40           - mov rsi,[rsp+40]
+AtomicHeart-Win64-Shipping.exe+3E2C999: 48 83 C4 20              - add rsp,20
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>39</ID>
+      <Description>"jump height"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>_jump_height</Address>
+      <Offsets>
+        <Offset>178</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>40</ID>
+      <Description>"flying"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-06
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(flying,AtomicHeart-Win64-Shipping.exe,F3 44 0F 11 A6 EC 00 00 00) // should be unique
+alloc(newmem,$1000,flying)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movss [rsi+000000EC],xmm12
+  mov [rsi+000000EC],(float)50
+  jmp return
+
+flying:
+  jmp newmem
+  nop 4
+return:
+registersymbol(flying)
+
+[DISABLE]
+
+flying:
+  db F3 44 0F 11 A6 EC 00 00 00
+
+unregistersymbol(flying)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+3E38AA6
+
+AtomicHeart-Win64-Shipping.exe+3E38A6B: 8B 45 C8                       - mov eax,[rbp-38]
+AtomicHeart-Win64-Shipping.exe+3E38A6E: F2 0F 10 45 C0                 - movsd xmm0,[rbp-40]
+AtomicHeart-Win64-Shipping.exe+3E38A73: F2 0F 11 86 4C 02 00 00        - movsd [rsi+0000024C],xmm0
+AtomicHeart-Win64-Shipping.exe+3E38A7B: 89 86 54 02 00 00              - mov [rsi+00000254],eax
+AtomicHeart-Win64-Shipping.exe+3E38A81: 48 8B 06                       - mov rax,[rsi]
+AtomicHeart-Win64-Shipping.exe+3E38A84: F3 0F 10 96 F0 01 00 00        - movss xmm2,[rsi+000001F0]
+AtomicHeart-Win64-Shipping.exe+3E38A8C: F3 0F 11 4C 24 20              - movss [rsp+20],xmm1
+AtomicHeart-Win64-Shipping.exe+3E38A92: 41 0F 28 C8                    - movaps xmm1,xmm8
+AtomicHeart-Win64-Shipping.exe+3E38A96: C7 86 EC 00 00 00 00 00 00 00  - mov [rsi+000000EC],00000000
+AtomicHeart-Win64-Shipping.exe+3E38AA0: FF 90 C0 06 00 00              - call qword ptr [rax+000006C0]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+3E38AA6: F3 44 0F 11 A6 EC 00 00 00     - movss [rsi+000000EC],xmm12
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+3E38AAF: F2 0F 11 B6 4C 02 00 00        - movsd [rsi+0000024C],xmm6
+AtomicHeart-Win64-Shipping.exe+3E38AB7: 89 9E 54 02 00 00              - mov [rsi+00000254],ebx
+AtomicHeart-Win64-Shipping.exe+3E38ABD: 48 8B 06                       - mov rax,[rsi]
+AtomicHeart-Win64-Shipping.exe+3E38AC0: 48 8B CE                       - mov rcx,rsi
+AtomicHeart-Win64-Shipping.exe+3E38AC3: FF 90 08 04 00 00              - call qword ptr [rax+00000408]
+AtomicHeart-Win64-Shipping.exe+3E38AC9: 48 8B 86 68 01 00 00           - mov rax,[rsi+00000168]
+AtomicHeart-Win64-Shipping.exe+3E38AD0: 32 DB                          - xor bl,bl
+AtomicHeart-Win64-Shipping.exe+3E38AD2: F3 0F 11 45 F8                 - movss [rbp-08],xmm0
+AtomicHeart-Win64-Shipping.exe+3E38AD7: 45 0F 28 D8                    - movaps xmm11,xmm8
+AtomicHeart-Win64-Shipping.exe+3E38ADB: 48 C7 45 F0 00 00 00 00        - mov qword ptr [rbp-10],00000000
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>82</ID>
+      <Description>"remove fall damage"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : AtomicHeart-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-10-06
+  Author : SERGEJ
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(fall_damage,AtomicHeart-Win64-Shipping.exe,F3 0F 10 A3 48 06 00 00) // should be unique
+alloc(newmem,$1000,fall_damage)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movss xmm4,[rbx+00000648]
+  mov [rbx+00000648],(float)750000
+  mov [rbx+00000650],(float)900000
+  jmp return
+
+fall_damage:
+  jmp newmem
+  nop 3
+return:
+registersymbol(fall_damage)
+
+[DISABLE]
+
+fall_damage:
+  db F3 0F 10 A3 48 06 00 00
+
+unregistersymbol(fall_damage)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: AtomicHeart-Win64-Shipping.exe+1BA6677
+
+AtomicHeart-Win64-Shipping.exe+1BA6648: 48 8B 01                 - mov rax,[rcx]
+AtomicHeart-Win64-Shipping.exe+1BA664B: FF 90 68 05 00 00        - call qword ptr [rax+00000568]
+AtomicHeart-Win64-Shipping.exe+1BA6651: 48 8B CB                 - mov rcx,rbx
+AtomicHeart-Win64-Shipping.exe+1BA6654: 84 C0                    - test al,al
+AtomicHeart-Win64-Shipping.exe+1BA6656: 75 12                    - jne AtomicHeart-Win64-Shipping.exe+1BA666A
+AtomicHeart-Win64-Shipping.exe+1BA6658: E8 C3 04 00 00           - call AtomicHeart-Win64-Shipping.exe+1BA6B20
+AtomicHeart-Win64-Shipping.exe+1BA665D: F3 0F 11 83 C8 06 00 00  - movss [rbx+000006C8],xmm0
+AtomicHeart-Win64-Shipping.exe+1BA6665: E9 95 00 00 00           - jmp AtomicHeart-Win64-Shipping.exe+1BA66FF
+AtomicHeart-Win64-Shipping.exe+1BA666A: E8 B1 04 00 00           - call AtomicHeart-Win64-Shipping.exe+1BA6B20
+AtomicHeart-Win64-Shipping.exe+1BA666F: F3 0F 10 93 C8 06 00 00  - movss xmm2,[rbx+000006C8]
+// ---------- INJECTING HERE ----------
+AtomicHeart-Win64-Shipping.exe+1BA6677: F3 0F 10 A3 48 06 00 00  - movss xmm4,[rbx+00000648]
+// ---------- DONE INJECTING  ----------
+AtomicHeart-Win64-Shipping.exe+1BA667F: F3 0F 5F D0              - maxss xmm2,xmm0
+AtomicHeart-Win64-Shipping.exe+1BA6683: F3 0F 10 AB D4 06 00 00  - movss xmm5,[rbx+000006D4]
+AtomicHeart-Win64-Shipping.exe+1BA668B: 0F 28 CC                 - movaps xmm1,xmm4
+AtomicHeart-Win64-Shipping.exe+1BA668E: F3 0F 10 1D 5A 2B BC 04  - movss xmm3,[AtomicHeart-Win64-Shipping.exe+67691F0]
+AtomicHeart-Win64-Shipping.exe+1BA6696: F3 0F 5C CD              - subss xmm1,xmm5
+AtomicHeart-Win64-Shipping.exe+1BA669A: F3 0F 11 93 C8 06 00 00  - movss [rbx+000006C8],xmm2
+AtomicHeart-Win64-Shipping.exe+1BA66A2: F3 0F 5C D0              - subss xmm2,xmm0
+AtomicHeart-Win64-Shipping.exe+1BA66A6: 0F 28 C1                 - movaps xmm0,xmm1
+AtomicHeart-Win64-Shipping.exe+1BA66A9: 0F 54 05 D0 6B BC 04     - andps xmm0,[AtomicHeart-Win64-Shipping.exe+676D280]
+AtomicHeart-Win64-Shipping.exe+1BA66B0: 0F 2F 05 A5 22 BC 04     - comiss xmm0,[AtomicHeart-Win64-Shipping.exe+676895C]
+}
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>_velocity</Name>
+      <Address>25130010</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>_coordinates</Name>
+      <Address>25130020</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>_jump_height</Name>
+      <Address>25130000</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+</CheatTable>
